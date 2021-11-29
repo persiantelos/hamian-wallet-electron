@@ -1,0 +1,29 @@
+{
+  "name": "src-electron",
+  "version": "1.0.0",
+  "description": "electron-app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"No test specified\" && exit 0",
+    "start": "electron ."
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^15.3.1"
+  },
+  "dependencies": {
+    "aes-js": "^3.1.2",
+    "electron-store": "^8.0.1",
+    "eosjs": "^22.1.0",
+    "eosjs-ecc": "^4.0.7",
+    "fetch": "^1.1.0",
+    "fs": "^0.0.1-security",
+    "get-random-values": "^1.2.2",
+    "node-fetch": "^2.6.1",
+    "pbkdf2": "^3.1.2",
+    "request": "^2.88.2",
+    "scrypt-async": "^2.0.1",
+    "ws": "^8.2.3"
+  }
+}
