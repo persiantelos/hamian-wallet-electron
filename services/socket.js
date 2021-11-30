@@ -43,12 +43,16 @@ const sendToEmbed = async(payload) =>{
 			{
 				var id=payload.request.data.id;
 				var wind = new BrowserWindow({
-					width: 500, 
-					height: 700,
+					width: 700, 
+					height: 900,
 					useContentSize: true,
 					webPreferences: { 
-					  nodeIntegration: process.env.QUASAR_NODE_INTEGRATION,
-					  nodeIntegrationInWorker: process.env.QUASAR_NODE_INTEGRATION, 
+					//   nodeIntegration: process.env.QUASAR_NODE_INTEGRATION,
+					//   nodeIntegrationInWorker: process.env.QUASAR_NODE_INTEGRATION, 
+					nodeIntegration: true,
+					nodeIntegrationInWorker: true,
+					contextIsolation: false,
+					enableRemoteModule: true,
 					}
 				  }) 
 				  var id=Math.random().toString();
@@ -57,7 +61,8 @@ const sendToEmbed = async(payload) =>{
 					  wind.on('closed', () => { 
 						delete global.windows[id];
 					})
-				  wind.loadURL(process.env.APP_URL+'?globalid='+id+'#/popup/signature')
+				//   wind.loadURL(process.env.APP_URL+'?globalid='+id+'#/popup/signature')
+				  wind.loadURL('http://localhost:8080/Signature'+'?globalid='+id)
 				  setTimeout(async ()=>{  
 					payload.request.data.payload.buf=payload.request.data.payload.transaction.abis[0].abi
 					console.log(payload.request.data.payload.transaction)
