@@ -1,5 +1,6 @@
 
 
+const {BrowserWindow} =require('electron')
 // import ecc from 'eosjs-ecc'
 const {ecc} = require('eosjs-ecc');
 let {PrivateKey, PublicKey, Signature, Aes, key_utils, config} = require('eosjs-ecc')
@@ -131,6 +132,34 @@ module.exports = class Wallet{
         var res = await EosioPlugin.runTransaction(network,transaction,account,data.payload);
  
         return res
+    }
+    async manualTransaction(dt)
+    {
+        var id=dt.data.id;
+        var wind = new BrowserWindow({
+            width: 700, 
+            height: 900,
+            useContentSize: true,
+            webPreferences: { 
+            //   nodeIntegration: process.env.QUASAR_NODE_INTEGRATION,
+            //   nodeIntegrationInWorker: process.env.QUASAR_NODE_INTEGRATION, 
+            nodeIntegration: true,
+            nodeIntegrationInWorker: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
+            }
+        }) 
+        global.windows[id]=wind;
+        console.log('id: ',id)
+            wind.on('closed', () => { 
+                delete global.windows[id];
+        })
+        wind.loadURL('http://localhost:8080/Signature'+'?globalid='+id)
+        setTimeout(async ()=>{     
+            global.temp[id]=dt
+            wind.webContents.send('socketResponse', dt); 
+        },2000)
+
     }
     async generateKeyOffline(){
         var public_key = '';
