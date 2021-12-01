@@ -129,18 +129,29 @@ module.exports = class Storage{
             return {message:data}
         }
     }
+    async getBlockchain(name){
+        return store.get(name)
+    }
     async saveSelectedNode(node){
-        await global.gclass.storage.addToJson('selectedNode',node.chainId,node.name);
-        let data = await global.gclass.storage.getFromJson('selectedNode',node.chainId)
+        let text = JSON.stringify(node)
+        await global.gclass.storage.addToJson('selectedNetwork',node.name,text);
+        let data = await global.gclass.storage.getBlockchain('selectedNetwork')
         if(data){
-            return {message:true}
+            return {message:'success', data:data}
+        }
+        else{
+            return {message:'failed',data:{}}
         }
     }
-    async getSelectedNode(chainId)
+    
+    async getSelectedChain()
     {
-        let data = await global.gclass.storage.getFromJson('selectedNode',chainId)
+        let data = await global.gclass.storage.getBlockchain('selectedNetwork')
         if(data){
-            return {message:data}
+            return {message:'success', data:data}
+        }
+        else{
+            return {message:'failed',data:{}}
         }
     }
 }
