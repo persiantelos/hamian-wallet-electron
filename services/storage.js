@@ -54,13 +54,16 @@ module.exports = class Storage{
             var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
             var decryptedBytes = aesCtr.decrypt(encryptedBytes);
             var decryptedText = aesjs.utils.utf8.fromBytes(decryptedBytes); 
+            console.log('JSON.parse(decryptedText)',JSON.parse(decryptedText))
             return JSON.parse(decryptedText) ;
 
         }catch(exp){
+            console.log('error',exp)
+            return {message:'error'}
 
             //  fs.unlinkSync(path)
         }
-        return false
+        return {message:'password is not correct!'}
     }
     async loadData()
     { 
