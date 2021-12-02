@@ -24,13 +24,13 @@ module.exports = class Wallet{
     }
     async addAccount(dt)
     {  
-
+        
         dt=await EosioPlugin.createAccount(dt);  
         var data =await global.gclass.storage.loadData(); 
         if(!data)return false;
         if(!data.accounts)data.accounts=[];
         var exist = data.accounts.filter(p=>p._id==dt._id)[0];
-        if(exist) return false;
+        if(exist) return {message:'Account exist'};
         data.accounts.push(dt);
         await global.gclass.storage.saveData(data);
         return true
