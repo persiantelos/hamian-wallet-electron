@@ -127,8 +127,8 @@ module.exports = class Storage{
     }
     async saveSelectedAccount(account)
     {
-        await global.gclass.storage.addToJson('selectedAccount',account.chainId,account.name);
-        let isTrue = await global.gclass.storage.getFromJson('selectedAccount',account.chainId)
+        await global.gclass.storage.addToJson('selectedAccount',account.network,account.name);
+        let isTrue = await global.gclass.storage.getFromJson('selectedAccount',account.network)
         if(isTrue){
             return {message:isTrue}
         }
