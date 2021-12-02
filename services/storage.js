@@ -54,7 +54,6 @@ module.exports = class Storage{
             var aesCtr = new aesjs.ModeOfOperation.ctr(key, new aesjs.Counter(5));
             var decryptedBytes = aesCtr.decrypt(encryptedBytes);
             var decryptedText = aesjs.utils.utf8.fromBytes(decryptedBytes); 
-            console.log('JSON.parse(decryptedText)',JSON.parse(decryptedText))
             return JSON.parse(decryptedText) ;
 
         }catch(exp){
@@ -107,9 +106,14 @@ module.exports = class Storage{
     {
         return store.get(name+'.'+key); 
     }
-    async deleteFromJson(name,key)
+    async deleteFromJson(name,key=null)
     {
-        store.delete(name+'.'+key); 
+        if(!key){
+            store.delete(name); 
+        }
+        else{
+            store.delete(name+'.'+key); 
+        }
     }
 
     async getAllFromJson(name)
@@ -127,20 +131,17 @@ module.exports = class Storage{
     }
     async getSelectedAccount()
     {
-        let data = await global.gclass.storage.getvalueFromJson('selectedAccount')
+        let data = await global.gclass.storage.getFromJson('selectedAccount')
         if(data){
             return {message:data}
         }
     }
-    async getvalueFromJson(name){
-        return store.get(name)
-    }
     async saveSelectedNode(node){
         let text = JSON.stringify(node)
-        await global.gclass.storage.addToJson('selectedNetwork',node.name,text);
-        let data = await global.gclass.storage.getvalueFromJson('selectedNetwork')
+        await global.gclass.storage.addToJson('blockchain','network',text);
+        let data = await global.gclass.storage.getFromJson('blockchain','network')
         if(data){
-            return {message:'success', data:data}
+            return {message:'success', data:JSON.parse(data)}
         }
         else{
             return {message:'failed',data:{}}
@@ -149,9 +150,9 @@ module.exports = class Storage{
     
     async getSelectedChain()
     {
-        let data = await global.gclass.storage.getvalueFromJson('selectedNetwork')
+        let data = await global.gclass.storage.getFromJson('blockchain','network')
         if(data){
-            return {message:'success', data:data}
+            return {message:'success', data:JSON.parse(data)}
         }
         else{
             return {message:'failed',data:{}}
