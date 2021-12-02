@@ -102,9 +102,14 @@ module.exports = class Storage{
         }
         store.set(name+'.'+key,data);
     }
-    async getFromJson(name,key)
+    async getFromJson(name,key=null)
     {
-        return store.get(name+'.'+key); 
+        if(!key){
+            return store.get(name); 
+        }
+        else{
+            return store.get(name+'.'+key); 
+        }
     }
     async deleteFromJson(name,key=null)
     {
