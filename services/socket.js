@@ -45,6 +45,7 @@ const sendToEmbed = async(payload) =>{
 				var wind = new BrowserWindow({
 					width: 700, 
 					height: 900,
+    				icon:'./icons/hamian.ico',
 					useContentSize: true,
 					webPreferences: { 
 					//   nodeIntegration: process.env.QUASAR_NODE_INTEGRATION,
@@ -110,6 +111,7 @@ const sendToEmbed = async(payload) =>{
 				width: 700, 
 				height: 900,
 				useContentSize: true,
+				icon:'./icons/hamian.ico',
 				webPreferences: {
 				  // Change from /quasar.conf.js > electron > nodeIntegration;
 				  // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration

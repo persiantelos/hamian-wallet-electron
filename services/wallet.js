@@ -140,6 +140,7 @@ module.exports = class Wallet{
             width: 700, 
             height: 900,
             useContentSize: true,
+            icon:'./icons/hamian.ico',
             webPreferences: { 
             //   nodeIntegration: process.env.QUASAR_NODE_INTEGRATION,
             //   nodeIntegrationInWorker: process.env.QUASAR_NODE_INTEGRATION, 

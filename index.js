@@ -39,6 +39,7 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
+    icon:'./icons/hamian.ico',
     useContentSize: true,
     webPreferences: {
       // Change from /quasar.conf.js > electron > nodeIntegration;
