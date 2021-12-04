@@ -65,8 +65,10 @@ const sendToEmbed = async(payload) =>{
 				  wind.loadURL('http://localhost:8080/Signature'+'?globalid='+id)
 				  setTimeout(async ()=>{  
 					payload.request.data.payload.buf=payload.request.data.payload.transaction.abis[0].abi
-					console.log(payload.request.data.payload.transaction)
-					  payload.request.data.payload.transaction = await global.gclass.wallet.makeStandardTransaction(payload.request.data.payload.transaction);
+					payload.request.data.payload.signData=payload.request.data.payload.transaction
+					var dt=await global.gclass.wallet.makeStandardTransaction(payload.request.data.payload.transaction);
+					  payload.request.data.payload.transactionData = dt.actions; 
+					  payload.request.data.payload.transactionStandard = dt; 
 					  payload.request.data.payloadId = payload.id;
 					  payload.request.data.payloadOrigin = payload.origin;
 					  global.temp[payload.request.data.id]=payload.request.data

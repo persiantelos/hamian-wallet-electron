@@ -19,6 +19,7 @@ module.exports = class Wallet{
         var chain=dt.chain;
         if(chain=='eos')
         {   
+            console.log('-------check',dt)
             return await EosioPlugin.checkAccountData(dt);
         }
     }
@@ -106,10 +107,10 @@ module.exports = class Wallet{
     }
     async rejectTransaction(id)
     {
-        console.log('payload:',id)
+        // console.log('payload:',id)
         if(!global.temp[id])return;
         var payload=global.temp[id];
-        console.log('payload:',payload)
+        // console.log('payload:',payload)
         HighLevelSockets.emit(payload.payloadOrigin,payload.payloadId,'api',
         {id:payload.id,result:{code: 402,isError: true, message: "User rejected the signature request", type: "signature_rejected"}});
 
@@ -128,7 +129,7 @@ module.exports = class Wallet{
 
  
         var network=data.payload.network;
-        var transaction=data.payload.transaction; 
+        var transaction=data.payload.transactionStandard; 
         var res = await EosioPlugin.runTransaction(network,transaction,account,data.payload);
  
         return res

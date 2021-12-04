@@ -49,7 +49,7 @@ module.exports=class EosioPlugin{
             var rpc = new JsonRpc(url, { fetch });
             var api = new Api({ rpc, signatureProvider:{}, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
             var xx=await api.deserializeTransactionWithActions(transaction.serializedTransaction)            
-            return xx.actions;
+            return xx;
         }
         else
         {
@@ -74,29 +74,28 @@ module.exports=class EosioPlugin{
           }
         var api = new Api({ rpc,authorityProvider, signatureProvider,chainId:network.chainId, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
         try{
-
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',transaction);
             var data = await api.transact(
-                {
-                    "actions" : transaction, 
-                } 
+                transaction
                 ,{
                     blocksBehind: 3,
                     expireSeconds: 30,  
-                    // sign: true 
+                    broadcast:false,
+                    sign: true 
                 }
             );
             console.log('----->>>',data) 
-            if(data.transaction_id)
-            { 
-                // setTimeout(async()=>{
-                //     var transaction_data = await rest.post((pre)+'/v1/history/get_transaction',{"block_num_hint":0,id:data.transaction_id});
+            // if(data.transaction_id)
+            // { 
+            //     // setTimeout(async()=>{
+            //     //     var transaction_data = await rest.post((pre)+'/v1/history/get_transaction',{"block_num_hint":0,id:data.transaction_id});
 
-                //     console.log('||||----->>>',transaction_data.trx.trx) 
-                //     console.log('||||----->>>',data.transaction_id) 
-                // },1000)
-	            return {data:data.signatures} 
-            }
-            return data
+            //     //     console.log('||||----->>>',transaction_data.trx.trx) 
+            //     //     console.log('||||----->>>',data.transaction_id) 
+            //     // },1000)
+	        //     return {data:data.signatures} 
+            // }
+            return  {data:data.signatures} 
         }catch(exp)
         {
             console.log(exp)
