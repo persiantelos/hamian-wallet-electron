@@ -5,6 +5,7 @@ const { TextEncoder, TextDecoder } = require('util');
 var url='https://mainnet.persiantelos.com'
 const ecc = require('eosjs-ecc');
 var rest=require('../rest');
+const numeric =require( 'eosjs/dist/eosjs-numeric');
 
 const Hasher =require( '../utils/Hasher');
 const IdGenerator =require( '../utils/IdGenerator');
@@ -20,7 +21,11 @@ module.exports=class EosioPlugin{
     static async checkAccountData(account)
     {
         var pub = ecc.PrivateKey(account.key).toPublic().toString('EOS');
-        var data = await rest.post(account.url+'/v1/history/get_key_accounts',{"public_key":pub});
+        
+	var newpub=numeric.publicKeyToString(numeric.stringToPublicKey(pub));
+
+        var data = await rest.post(account.url+'/v1/history/get_key_accounts',{"public_key":newpub});
+        console.log(account.url+'/v1/history/get_key_accounts',{"public_key":newpub});
         data.publicKey=pub;
         return data;
     }
