@@ -94,6 +94,18 @@ module.exports = class Wallet{
         if(!global.temp[id])return;
         var payload=global.temp[id];
 
+        if(global.localTransaction[id])
+        {
+            var result= await this.runLocalTransaction(payload,global.localTransaction[id].connection)
+             
+            global.localTransaction[id].res(result)
+            delete global.localTransaction[id];
+            delete  global.temp[id];
+            return
+        }
+
+        
+
         var dt= await this.runTransaction(payload)
         var result={}
         if(dt.data)
@@ -107,6 +119,12 @@ module.exports = class Wallet{
     }
     async rejectTransaction(id)
     {
+        if(global.localTransaction[id])
+        {
+            global.localTransaction[id].res({})
+            delete global.localTransaction[id];
+            return;
+        }
         // console.log('payload:',id)
         if(!global.temp[id])return;
         var payload=global.temp[id];
@@ -116,10 +134,29 @@ module.exports = class Wallet{
 
         delete  global.temp[id];
     }
+    async runLocalTransaction(data,connection)
+   { 
+       if(!connection)
+       {
+           return {error:"connection not found"};
+       }
+       
+       var account = await EosioPlugin.findUser(connection.result.accounts[0]);
+
+       console.log('>>>',data)
+       var network=data.payload.network;
+       var transaction=data.payload.transactionStandard; 
+       var res = await EosioPlugin.runTransaction(network,transaction,account,true);
+
+       return res
+   }
      async runTransaction(data)
     {
         var appKey=data.appkey;
         var connection = await this.checkConnection(appKey);
+        // console.log('RRRRRRRRRRRRRRRRRRRRRRRRRRR',
+        // JSON.stringify(connection,null,4)
+        // );
         if(!connection)
         {
             return {error:"connection not found"};
@@ -130,37 +167,46 @@ module.exports = class Wallet{
  
         var network=data.payload.network;
         var transaction=data.payload.transactionStandard; 
-        var res = await EosioPlugin.runTransaction(network,transaction,account,data.payload);
+        var res = await EosioPlugin.runTransaction(network,transaction,account);
  
         return res
     }
     async manualTransaction(dt)
     {
-        var id=dt.data.id;
-        var wind = new BrowserWindow({
-            width: 700, 
-            height: 900,
-            useContentSize: true,
-            icon:'./icons/hamian.ico',
-            webPreferences: { 
-            //   nodeIntegration: process.env.QUASAR_NODE_INTEGRATION,
-            //   nodeIntegrationInWorker: process.env.QUASAR_NODE_INTEGRATION, 
-            nodeIntegration: true,
-            nodeIntegrationInWorker: true,
-            contextIsolation: false,
-            enableRemoteModule: true,
+        return await new Promise((res,rej)=>{
+            var id=dt.data.id;
+            global.localTransaction[id]={res,rej,connection:dt.connection}
+            var wind = new BrowserWindow({
+                width: 700, 
+                height: 900,
+                useContentSize: true,
+                icon:'./icons/hamian.ico',
+                webPreferences: { 
+                //   nodeIntegration: process.env.QUASAR_NODE_INTEGRATION,
+                //   nodeIntegrationInWorker: process.env.QUASAR_NODE_INTEGRATION, 
+                nodeIntegration: true,
+                nodeIntegrationInWorker: true,
+                contextIsolation: false,
+                enableRemoteModule: true,
+                }
+            }) 
+            global.windows[id]=wind;
+            console.log('id: ',id)
+                wind.on('closed', () => { 
+                    delete global.windows[id];
+            })
+            wind.loadURL('http://localhost:8080/Signature'+'?globalid='+id)
+            var payload={
+                type: 'api',
+                request:dt
             }
-        }) 
-        global.windows[id]=wind;
-        console.log('id: ',id)
-            wind.on('closed', () => { 
-                delete global.windows[id];
+            console.log('---------------------------------------',dt)
+            setTimeout(async ()=>{     
+                
+                global.temp[id]=payload.request.data
+                wind.webContents.send('socketResponse', payload); 
+            },5000)
         })
-        wind.loadURL('http://localhost:8080/Signature'+'?globalid='+id)
-        setTimeout(async ()=>{     
-            global.temp[id]=dt
-            wind.webContents.send('socketResponse', dt); 
-        },2000)
 
     }
     async generateKeyOffline(){

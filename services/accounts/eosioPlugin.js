@@ -61,7 +61,7 @@ module.exports=class EosioPlugin{
             return transaction;
         }
     }
-    static async runTransaction(network,transaction,account,payload)
+    static async runTransaction(network,transaction,account,broadcast=false)
     {
         const signatureProvider = new JsSignatureProvider([account.privateKey]);
         var url=network.httpEndpoint;//.replace('https','http'); 
@@ -79,16 +79,21 @@ module.exports=class EosioPlugin{
           }
         var api = new Api({ rpc,authorityProvider, signatureProvider,chainId:network.chainId, textDecoder: new TextDecoder(), textEncoder: new TextEncoder() });
         try{
-            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',transaction);
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',transaction.actions[0]);
+            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>',url);
             var data = await api.transact(
                 transaction
                 ,{
                     blocksBehind: 3,
                     expireSeconds: 30,  
-                    broadcast:false,
+                    broadcast,
                     sign: true 
                 }
             );
+            if(broadcast)
+            {
+                return data;
+            }
             console.log('----->>>',data) 
             // if(data.transaction_id)
             // { 
@@ -100,7 +105,7 @@ module.exports=class EosioPlugin{
             //     // },1000)
 	        //     return {data:data.signatures} 
             // }
-            return  {data:data.signatures} 
+            return  {data:data.signatures,serializedTransaction:data.serializedTransaction} 
         }catch(exp)
         {
             console.log(exp)

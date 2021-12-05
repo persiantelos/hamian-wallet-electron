@@ -81,6 +81,7 @@ app.on('activate', () => {
     createWindow()
   }
 })
+global.localTransaction={}
 global.temp={};
 global.gclass={
   wallet:new Wallet(),

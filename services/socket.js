@@ -73,6 +73,8 @@ const sendToEmbed = async(payload) =>{
 					  payload.request.data.payloadId = payload.id;
 					  payload.request.data.payloadOrigin = payload.origin;
 					  global.temp[payload.request.data.id]=payload.request.data
+					  
+					  console.log('---------------------------------------',payload)
 					wind.webContents.send('socketResponse', payload);
 	
 				  },3000)
