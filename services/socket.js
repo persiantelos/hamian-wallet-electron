@@ -63,7 +63,7 @@ const sendToEmbed = async(payload) =>{
 						delete global.windows[id];
 					})
 				//   wind.loadURL(process.env.APP_URL+'?globalid='+id+'#/popup/signature')
-				  wind.loadURL('http://localhost:8080/Signature'+'?globalid='+id)
+				  wind.loadURL(process.env.APP_URL+'Signature'+'?globalid='+id)
 				  setTimeout(async ()=>{  
 					payload.request.data.payload.buf=payload.request.data.payload.transaction.abis[0].abi
 					payload.request.data.payload.signData=payload.request.data.payload.transaction
@@ -138,7 +138,7 @@ const sendToEmbed = async(payload) =>{
 					delete global.windows[id];
 				}) 
 			//   wind.loadURL(process.env.APP_URL+'?globalid='+id+'#/LocalLogin')
-			  wind.loadURL('http://localhost:8080/LocalLogin'+'?globalid='+id)
+			  wind.loadURL(process.env.APP_URL+'LocalLogin'+'?globalid='+id)
 			  setTimeout(()=>{
 
 				  wind.webContents.send('socketResponse', payload);

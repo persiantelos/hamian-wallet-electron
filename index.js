@@ -7,11 +7,11 @@ const { app, BrowserWindow , nativeTheme , ipcMain } = require('electron')
 // import { app, BrowserWindow, nativeTheme,ipcMain } from 'electron' 
 // add "type": "module", in node_module
   
-
+require('dotenv').config()
 
 const path = require('path')
 
-
+console.log('---------------------------------',process.env.APP_URL)
 const HighLevelSockets = require('./services/socket');
 const Storage = require('./services/storage');
 const Wallet = require('./services/wallet');
@@ -58,7 +58,7 @@ function createWindow () {
   HighLevelSockets.setMainWindow(mainWindow);
   HighLevelSockets.initialize() 
 //   var address=process.env.APP_URL+'?globalid=main'; 
-  var address='http://localhost:8080/'+'?globalid=main';
+  var address=process.env.APP_URL+'?globalid=main';
   mainWindow.loadURL(address)
   global.windows['main']=mainWindow;
   mainWindow.on('closed', () => {

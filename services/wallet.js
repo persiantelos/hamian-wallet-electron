@@ -195,7 +195,7 @@ module.exports = class Wallet{
                 wind.on('closed', () => { 
                     delete global.windows[id];
             })
-            wind.loadURL('http://localhost:8080/Signature'+'?globalid='+id)
+            wind.loadURL(process.env.APP_URL+'Signature'+'?globalid='+id)
             var payload={
                 type: 'api',
                 request:dt
