@@ -33,23 +33,22 @@ global.windows={};
 let mainWindow
 
 function createWindow () {
+	app.setAsDefaultProtocolClient('scatter');
   /**
    * Initial window options
    */ 
   mainWindow = new BrowserWindow({
-    width: 1400,
-    height: 900,
+    width: 1200,
+    height: 800,
     icon:'./icons/hamian.ico',
+		resizable: false,
     useContentSize: true,
-    webPreferences: {
-      // Change from /quasar.conf.js > electron > nodeIntegration;
-      // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration
-      // nodeIntegration: process.env.QUASAR_NODE_INTEGRATION,
-      nodeIntegration: true,
-      // nodeIntegrationInWorker: process.env.QUASAR_NODE_INTEGRATION,
+    webPreferences: { 
+      nodeIntegration: true, 
       nodeIntegrationInWorker: true,
       contextIsolation: false,
       enableRemoteModule: true,
+			webviewTag:true,
 
       // More info: /quasar-cli/developing-electron-apps/electron-preload-script
       // preload: path.resolve(__dirname, 'electron-preload.js')
@@ -58,8 +57,21 @@ function createWindow () {
   HighLevelSockets.setMainWindow(mainWindow);
   HighLevelSockets.initialize() 
 //   var address=process.env.APP_URL+'?globalid=main'; 
+
+  if(!process.env.IS_DEV)
+  {
+  var address=process.env.APP_URL;
+
+    mainWindow.loadFile(address)
+     
+  }
+  else
+  {
   var address=process.env.APP_URL+'?globalid=main';
-  mainWindow.loadURL(address)
+    mainWindow.loadURL(address)
+
+  }
+
   global.windows['main']=mainWindow;
   mainWindow.on('closed', () => {
     mainWindow = null;

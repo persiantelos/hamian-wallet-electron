@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"No test specified\" && exit 0",
     "start": "electron .",
-    "build":"electron-packager ./ Hamian --platform=win32 --arch=x64"
+    "build1": "electron .",
+    "build": "electron-packager ./  Hamian --platform=win32 --arch=x64 --overwrite force"
   },
   "author": "",
   "license": "ISC",
@@ -26,6 +27,7 @@
     "pbkdf2": "^3.1.2",
     "request": "^2.88.2",
     "scrypt-async": "^2.0.1",
+    "url": "^0.11.0",
     "ws": "^8.2.3"
   }
 }
