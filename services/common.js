@@ -26,7 +26,7 @@ module.exports = class Common
         }
         else
         {
-            var address=process.env.APP_URL+'/#/'+hash+'?globalid='+globalid;
+            var address=process.env.APP_URL+'/?globalid='+globalid+'#/'+hash;
             return address 
 
         }

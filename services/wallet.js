@@ -3,6 +3,7 @@
 const {BrowserWindow} =require('electron')
 // import ecc from 'eosjs-ecc'
 const {ecc} = require('eosjs-ecc');
+const common=require('./common.js')  
 let {PrivateKey, PublicKey, Signature, Aes, key_utils, config} = require('eosjs-ecc')
 
 var rest=require('./rest');
@@ -177,8 +178,10 @@ module.exports = class Wallet{
             var id=dt.data.id;
             global.localTransaction[id]={res,rej,connection:dt.connection}
             var wind = new BrowserWindow({
-                width: 700, 
-                height: 900,
+                width: 550, 
+                height: 770, 
+                resizable: !!process.env.IS_DEV,
+                autoHideMenuBar: !process.env.IS_DEV,
                 useContentSize: true,
                 icon:'./icons/hamian.ico',
                 webPreferences: { 
@@ -195,7 +198,11 @@ module.exports = class Wallet{
                 wind.on('closed', () => { 
                     delete global.windows[id];
             })
-            wind.loadURL(process.env.APP_URL+'Signature'+'?globalid='+id)
+            
+				var address = common.getUrl(id,'Signature')
+				console.log(address)
+				  wind.loadURL(address)
+            // wind.loadURL(process.env.APP_URL+'Signature'+'?globalid='+id)
             var payload={
                 type: 'api',
                 request:dt
