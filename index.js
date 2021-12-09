@@ -109,6 +109,7 @@ app.on('activate', () => {
   }
 })
 global.localTransaction={}
+global.payload={}
 global.temp={};
 global.gclass={
   wallet:new Wallet(),
@@ -130,7 +131,7 @@ ipcMain.on('transfer',async (_, {data,name,id,globalId}) => {
       resp=await gclass[action](data.data)
     }
   }  
-  
+  console.log('--------->',globalId,global.windows[globalId])
   if(global.windows[globalId])
   {
     global.windows[globalId].webContents.send('transfer', {id,data:resp}); 

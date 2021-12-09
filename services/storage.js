@@ -41,6 +41,13 @@ module.exports = class Storage{
         }
         return true;
     }
+    async getPayload(id)
+    {
+        var wind = global.windows[id];
+        var payload = global.payload[id];
+        wind.webContents.send('socketResponse', payload);
+        delete global.payload[id];
+    }
     async login(pass)
     {
         password=pass;

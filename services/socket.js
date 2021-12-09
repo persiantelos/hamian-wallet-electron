@@ -5,8 +5,10 @@ const https = require('https');
 const WebSocket = require('ws');
 const net = require('net');
 const fs = require('fs')
-const {BrowserWindow} =require('electron')
+const path = require('path')
+const {BrowserWindow,app} =require('electron')
 const common=require('./common.js')  
+const Alert = require("electron-alert");
 let mainWindow;
 const sendToEmbed = async(payload) =>{
 	//
@@ -70,7 +72,6 @@ const sendToEmbed = async(payload) =>{
 				console.log(address)
 				  wind.loadURL(address)
 				//   wind.loadURL(process.env.APP_URL+'Signature'+'?globalid='+id)
-				  setTimeout(async ()=>{  
 					payload.request.data.payload.buf=payload.request.data.payload.transaction.abis[0].abi
 					payload.request.data.payload.signData=payload.request.data.payload.transaction
 					var dt=await global.gclass.wallet.makeStandardTransaction(payload.request.data.payload.transaction);
@@ -80,10 +81,12 @@ const sendToEmbed = async(payload) =>{
 					  payload.request.data.payloadOrigin = payload.origin;
 					  global.temp[payload.request.data.id]=payload.request.data
 					  
-					  console.log('---------------------------------------',payload)
-					wind.webContents.send('socketResponse', payload);
+					global.payload[id]=payload
+				//   setTimeout(async ()=>{  
+				// 	  console.log('---------------------------------------',payload)
+				// 	wind.webContents.send('socketResponse', payload);
 	
-				  },6000)
+				//   },10000)
 
 			}
 			
@@ -139,8 +142,9 @@ const sendToEmbed = async(payload) =>{
 				}
 			  })
 			
-			  var id=Math.random().toString();
-			  global.windows[id]=wind;
+			  	var id=Math.random().toString();
+			  	global.windows[id]=wind;
+				global.payload[id]=payload
 			  console.log('id: ',id)
 			  	wind.on('closed', () => { 
 					delete global.windows[id];
@@ -150,11 +154,11 @@ const sendToEmbed = async(payload) =>{
 				console.log(address)
 				  wind.loadURL(address)
 			//   wind.loadURL(process.env.APP_URL+'LocalLogin'+'?globalid='+id)
-			  setTimeout(()=>{
+			//   setTimeout(()=>{
+			// 	console.log('44444444444444444444444444444444444444444444444444444')
+			// 	  wind.webContents.send('socketResponse', payload);
 
-				  wind.webContents.send('socketResponse', payload);
-
-			  },3000)
+			//   },10000)
 
 		}
 
@@ -316,6 +320,7 @@ class LowLevelSocketService {
 			while(!await isPortAvailable(port)) port+=1500;
 			return port;
 		};
+		
 
 		const http = await findPort();
 		const https = await findPort(1);
@@ -329,15 +334,36 @@ let sockets = new LowLevelSocketService();
 class HighLevelSockets {
 
 	static setMainWindow(w){
+
 		mainWindow = w;
 	}
 
 	static async initialize(){
+		try{
 		const certs ={
-            key: fs.readFileSync('./cert/key.pem'),
-            cert:fs.readFileSync('./cert/cert.pem')
+            key: fs.readFileSync(path.resolve(app.getAppPath(), './cert/key.pem' ) ),
+            cert:fs.readFileSync(path.resolve(app.getAppPath(), './cert/cert.pem'))
           };
 		return sockets.initialize(certs);
+
+		}catch(exp){
+
+			let alert = new Alert();
+
+			let swalOptions = {
+				title: "Error",
+				text: exp.message,
+				icon: "warning", 
+			};
+			let promise = alert.fireWithFrame(swalOptions, "", null, false);
+			promise.then((result) => {
+				if (result.value) {
+					// confirmed
+				} else if (result.dismiss === Alert.DismissReason.cancel) {
+					// canceled
+				}
+			})
+		}
 	}
 
 	static async close(){

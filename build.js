@@ -63,12 +63,12 @@ function copyFolderRecursiveSync( source, target,tragetFolder ) {
 }
 var main =async function()
 {
-    await run('npm --prefix '+vuejspath+' run build'); 
-    if (!fs.existsSync(elecronpath+'/dist/unpack')){
-        fs.mkdirSync(elecronpath+'/dist/unpack', { recursive: true });
-    } 
-    copyFolderRecursiveSync(vuejspath+'/dist',elecronpath+'/dist','unpack')
-    await run('asar pack '+(elecronpath+'/dist/unpack')+' dist/app.asar')
+    // await run('npm --prefix '+vuejspath+' run build'); 
+    // if (!fs.existsSync(elecronpath+'/dist/unpack')){
+    //     fs.mkdirSync(elecronpath+'/dist/unpack', { recursive: true });
+    // } 
+    // copyFolderRecursiveSync(vuejspath+'/dist',elecronpath+'/dist','unpack')
+    // await run('asar pack '+(elecronpath+'/dist/unpack')+' dist/app.asar')
     await run("electron-packager ./  Hamian --platform=win32 --arch=x64 --overwrite force --out=./dist")
     // fs.rmdirSync(elecronpath+'/dist/Hamian-win32-x64/resources/app', { recursive: true });
     // fs.mkdirSync(elecronpath+'/dist/Hamian-win32-x64/resources/app', { recursive: true });
