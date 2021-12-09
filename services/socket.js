@@ -6,6 +6,7 @@ const WebSocket = require('ws');
 const net = require('net');
 const fs = require('fs')
 const {BrowserWindow} =require('electron')
+const common=require('./common.js')  
 let mainWindow;
 const sendToEmbed = async(payload) =>{
 	//
@@ -43,8 +44,10 @@ const sendToEmbed = async(payload) =>{
 			{
 				var id=payload.request.data.id;
 				var wind = new BrowserWindow({
-					width: 700, 
-					height: 900,
+					width: 550, 
+					height: 770, 
+					resizable: !!process.env.IS_DEV,
+					autoHideMenuBar: !process.env.IS_DEV,
     				icon:'./icons/hamian.ico',
 					useContentSize: true,
 					webPreferences: { 
@@ -63,7 +66,10 @@ const sendToEmbed = async(payload) =>{
 						delete global.windows[id];
 					})
 				//   wind.loadURL(process.env.APP_URL+'?globalid='+id+'#/popup/signature')
-				  wind.loadURL(process.env.APP_URL+'Signature'+'?globalid='+id)
+				var address = common.getUrl(id,'Signature')
+				console.log(address)
+				  wind.loadURL(address)
+				//   wind.loadURL(process.env.APP_URL+'Signature'+'?globalid='+id)
 				  setTimeout(async ()=>{  
 					payload.request.data.payload.buf=payload.request.data.payload.transaction.abis[0].abi
 					payload.request.data.payload.signData=payload.request.data.payload.transaction
@@ -77,7 +83,7 @@ const sendToEmbed = async(payload) =>{
 					  console.log('---------------------------------------',payload)
 					wind.webContents.send('socketResponse', payload);
 	
-				  },3000)
+				  },6000)
 
 			}
 			
@@ -112,9 +118,11 @@ const sendToEmbed = async(payload) =>{
 			// 	}
 			//   }) 
 			var wind = new BrowserWindow({
-				width: 700, 
-				height: 900,
+				width: 550, 
+				height: 770,
 				useContentSize: true,
+				resizable: !!process.env.IS_DEV,
+				autoHideMenuBar: !process.env.IS_DEV,
 				icon:'./icons/hamian.ico',
 				webPreferences: {
 				  // Change from /quasar.conf.js > electron > nodeIntegration;
@@ -137,8 +145,11 @@ const sendToEmbed = async(payload) =>{
 			  	wind.on('closed', () => { 
 					delete global.windows[id];
 				}) 
-			//   wind.loadURL(process.env.APP_URL+'?globalid='+id+'#/LocalLogin')
-			  wind.loadURL(process.env.APP_URL+'LocalLogin'+'?globalid='+id)
+				
+				var address = common.getUrl(id,'LocalLogin')
+				console.log(address)
+				  wind.loadURL(address)
+			//   wind.loadURL(process.env.APP_URL+'LocalLogin'+'?globalid='+id)
 			  setTimeout(()=>{
 
 				  wind.webContents.send('socketResponse', payload);

@@ -45,6 +45,7 @@ module.exports = class Storage{
     {
         password=pass;
         const path = `${app.getPath('userData')}/data.json`;
+        console.log(path)
         var exist = fs.existsSync(path);
         if(!exist) return false;
         try{

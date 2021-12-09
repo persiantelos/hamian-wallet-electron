@@ -3,11 +3,13 @@
 // const fetch = require('node-fetch');
 // node only; not needed in browsers
 
+
 const { app, BrowserWindow , nativeTheme , ipcMain } = require('electron')
 // import { app, BrowserWindow, nativeTheme,ipcMain } from 'electron' 
 // add "type": "module", in node_module
-  
+const common=require('./services/common.js')  
 require('dotenv').config()
+const url = require('url')
 
 const path = require('path')
 
@@ -41,7 +43,8 @@ function createWindow () {
     width: 1200,
     height: 800,
     icon:'./icons/hamian.ico',
-		resizable: false,
+    autoHideMenuBar: !process.env.IS_DEV,
+		resizable: !!process.env.IS_DEV,
     useContentSize: true,
     webPreferences: { 
       nodeIntegration: true, 
@@ -57,20 +60,32 @@ function createWindow () {
   HighLevelSockets.setMainWindow(mainWindow);
   HighLevelSockets.initialize() 
 //   var address=process.env.APP_URL+'?globalid=main'; 
-
-  if(!process.env.IS_DEV)
-  {
-  var address=process.env.APP_URL;
-
-    mainWindow.loadFile(address)
+  var address = common.getUrl('main')
+  
+  console.log(address)
+  mainWindow.loadURL(address)
+  // if(!process.env.IS_DEV)
+  // {
+  //   var address=process.env.APP_URL;
+  //   var urlData=path.resolve(app.getAppPath(), address);
+  //   console.log(urlData)
+  //   mainWindow.loadURL(url.format({
+  //       slashes: true,
+  //       protocol: 'file:', 
+  //       pathname: urlData,
+  //       query: {
+  //         globalid: 'main'
+  //       }
+  //     }) 
+  //   )
      
-  }
-  else
-  {
-  var address=process.env.APP_URL+'?globalid=main';
-    mainWindow.loadURL(address)
+  // }
+  // else
+  // {
+  //   var address=process.env.APP_URL+'?globalid=main';
+  //   mainWindow.loadURL(address)
 
-  }
+  // }
 
   global.windows['main']=mainWindow;
   mainWindow.on('closed', () => {
@@ -109,15 +124,12 @@ ipcMain.on('transfer',async (_, {data,name,id,globalId}) => {
   if(gclass)
   {
     var action=data.action;
-    
-    // console.log('>>>>>>>>>>>>>>>>',action);  
+     
     if(action && gclass[action])
     {
       resp=await gclass[action](data.data)
     }
-  }
-  // console.log('-',globalId);   
-  // console.log('-',resp);   
+  }  
   
   if(global.windows[globalId])
   {
