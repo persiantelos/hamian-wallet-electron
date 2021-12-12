@@ -217,32 +217,17 @@ module.exports = class Wallet{
 
     }
     async generateKeyOffline(){
-        var public_key = '';
-        var private_key = '';
-        console.log('befor try')
         try{
-            console.log('try')
-            
             let privateWif
-            PrivateKey.randomKey().then(privateKey => privateWif = privateKey.toWif())
-            
-            // Convert to a public key
-            pubkey = PrivateKey.fromString(privateWif).toPublic().toString()
-            
-            console.log('privateWif',privateWif)
-            console.log('pubkey',pubkey)
-
-            // ecc.randomKey()
-            // .then(privateKey => {
-            //     console.log('then')
-            //     console.log('Private Key:\t', privateKey) // wif
-            //     console.log('Public Key:\t', ecc.privateToPublic(privateKey)) // EOSkey...
-            //     private_key = privateKey;
-            //     public_key = ecc.privateToPublic(privateKey)
-            //     return [{public_key:public_key},{private_key:private_key}]
-            // }).catch(err=>{
-            //     console.log("err",err)
-            // });
+            await PrivateKey.randomKey().then(privateKey => privateWif = privateKey.toWif())
+            let pubkey = await PrivateKey.fromString(privateWif).toPublic().toString()
+            return {
+                    message:'success',
+                    data:{
+                        private_key:privateWif,
+                        public_key:pubkey
+                    }
+                }
         }catch(exp){
             console.log("exp",exp)
         }
