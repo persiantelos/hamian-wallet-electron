@@ -173,7 +173,7 @@ module.exports = class Storage{
     }
     async saveTokenManually(token){
         await global.gclass.storage.addToJson('tokens',token.data._id,token.data);
-        let all_tokens = await global.gclass.storage.getFromJson('tokens')
+        let all_tokens = await global.gclass.storage.getFromJson('tokens',token.data._id)
         if(all_tokens){
             return {message:'success',data:'Token saved successfully !'}
         }
