@@ -171,4 +171,23 @@ module.exports = class Storage{
             return {message:'failed',data:{}}
         }
     }
+    async saveTokenManually(token){
+        await global.gclass.storage.addToJson('tokens',token.data._id,token.data);
+        let all_tokens = await global.gclass.storage.getFromJson('tokens')
+        if(all_tokens){
+            return {message:'success',data:'Token saved successfully !'}
+        }
+        else{
+            return {message:'failed',data:{}}
+        }
+    }
+    async getLocalTolens(){
+        let all_tokens = await global.gclass.storage.getFromJson('tokens')
+        if(all_tokens){
+            return {message:'success',data:[all_tokens]}
+        }
+        else{
+            return {message:'failed',data:{}}
+        }
+    }
 }
